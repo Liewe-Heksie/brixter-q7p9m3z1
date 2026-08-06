@@ -10,30 +10,97 @@
             font-family: Consolas, monospace;
             padding: 40px;
         }
+
+        /* Glitch intro */
+        #glitchIntro {
+            font-size: 32px;
+            color: #00ff9d;
+            animation: glitch 0.8s linear infinite;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 2px 2px #ff00c8; }
+            20% { text-shadow: -2px -2px #00c8ff; }
+            40% { text-shadow: 2px -2px #ff00c8; }
+            60% { text-shadow: -2px 2px #00c8ff; }
+            80% { text-shadow: 2px 2px #ff00c8; }
+            100% { text-shadow: -2px -2px #00c8ff; }
+        }
+
+        /* Terminal box */
         .terminal {
             border: 1px solid #00ff9d;
             padding: 20px;
             max-width: 700px;
+            display: none;
         }
+
         .title {
             font-size: 28px;
             margin-bottom: 10px;
         }
+
         .line {
             margin: 8px 0;
         }
-        a {
-            color: #00c8ff;
-            text-decoration: none;
+
+        /* Fake password gate */
+        #passwordGate {
+            display: none;
+            max-width: 400px;
+            margin: auto;
+            border: 1px solid #00ff9d;
+            padding: 20px;
         }
-        a:hover {
-            text-decoration: underline;
+
+        #passwordInput {
+            width: 100%;
+            padding: 8px;
+            background-color: #000;
+            border: 1px solid #00ff9d;
+            color: #00ff9d;
+            font-family: Consolas;
+        }
+
+        #dashboard {
+            margin-top: 20px;
+            border: 1px solid #00ff9d;
+            padding: 20px;
+            display: none;
+        }
+
+        .module {
+            border: 1px solid #00c8ff;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 80px;
+            background-color: #000;
+            color: #00ff9d;
+            border: 1px solid #00ff9d;
+            font-family: Consolas;
+            padding: 8px;
         }
     </style>
 </head>
 <body>
 
-<div class="terminal">
+<!-- GLITCH INTRO -->
+<div id="glitchIntro">ACCESSING BRIXTER PORTAL...</div>
+
+<!-- PASSWORD GATE -->
+<div id="passwordGate">
+    <div class="line">> Enter password to continue:</div>
+    <input id="passwordInput" type="password" placeholder="********">
+</div>
+
+<!-- MAIN TERMINAL -->
+<div class="terminal" id="mainTerminal">
     <div class="title">brixter@portal:~</div>
 
     <div class="line">Initializing secure interface...</div>
@@ -52,9 +119,50 @@
     <div class="line">This is a private page created by Brixter.</div>
 
     <div class="line">> links</div>
-    <div class="line"><a href="#">(add your links here)</a></div>
+    <textarea placeholder="Type your links here..."></textarea>
 
+    <hr>
+
+    <!-- BRIXTER OS DASHBOARD -->
+    <div id="dashboard">
+        <div class="module">
+            <strong>System Status:</strong><br>
+            CPU Load: 12%<br>
+            Memory Usage: 38%<br>
+            Network: Secure
+        </div>
+
+        <div class="module">
+            <strong>Active Modules:</strong><br>
+            - Stealth Mode<br>
+            - Encryption Layer<br>
+            - Portal Interface
+        </div>
+
+        <div class="module">
+            <strong>User Notes:</strong><br>
+            <textarea placeholder="Write notes here..."></textarea>
+        </div>
+    </div>
 </div>
+
+<script>
+    // Step 1: Glitch intro → password gate
+    setTimeout(() => {
+        document.getElementById("glitchIntro").style.display = "none";
+        document.getElementById("passwordGate").style.display = "block";
+    }, 2000);
+
+    // Step 2: Fake password gate → main terminal + dashboard
+    document.getElementById("passwordInput").addEventListener("keyup", function(e) {
+        if (e.key === "Enter") {
+            document.getElementById("passwordGate").style.display = "none";
+            document.getElementById("mainTerminal").style.display = "block";
+            document.getElementById("dashboard").style.display = "block";
+        }
+    });
+</script>
 
 </body>
 </html>
+
