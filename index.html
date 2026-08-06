@@ -138,9 +138,9 @@
         }
     </style>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+    <!-- Firebase compat SDK (global firebase object) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
 
@@ -156,7 +156,7 @@
 <div id="glitchIntro">ACCESSING BRIXTER PORTAL...</div>
 
 <div id="passwordGate">
-    <div class="line">> Enter password to continue:</div>
+    <div>> Enter password to continue:</div>
     <input id="passwordInput" type="password" placeholder="********">
 </div>
 
@@ -233,312 +233,312 @@
 </div>
 
 <script>
-    // === THEME ENGINE ===
-    function applyTheme(theme) {
-        const body = document.body;
-        const terminal = document.getElementById("mainTerminal");
-        const dashboard = document.getElementById("dashboard");
+// === THEME ENGINE ===
+function applyTheme(theme) {
+    const body = document.body;
+    const terminal = document.getElementById("mainTerminal");
+    const dashboard = document.getElementById("dashboard");
 
-        if (theme === "cyberpunk") {
-            body.style.background = "linear-gradient(135deg, #0a0a0a, #1a001f)";
-            body.style.color = "#00f0ff";
-            terminal.style.borderColor = "#00f0ff";
-            dashboard.style.borderColor = "#00f0ff";
-            body.style.textShadow = "0 0 8px #00f0ff";
-        }
-
-        if (theme === "red") {
-            body.style.background = "linear-gradient(135deg, #1a0000, #4d0000)";
-            body.style.color = "#ff4040";
-            terminal.style.borderColor = "#ff4040";
-            dashboard.style.borderColor = "#ff4040";
-            body.style.textShadow = "0 0 8px #ff4040";
-        }
-
-        if (theme === "blue") {
-            body.style.background = "linear-gradient(135deg, #00001a, #00004d)";
-            body.style.color = "#4d94ff";
-            terminal.style.borderColor = "#4d94ff";
-            dashboard.style.borderColor = "#4d94ff";
-            body.style.textShadow = "0 0 8px #4d94ff";
-        }
-
-        if (theme === "matrix") {
-            body.style.background = "#000";
-            body.style.color = "#00ff00";
-            terminal.style.borderColor = "#00ff00";
-            dashboard.style.borderColor = "#00ff00";
-            body.style.textShadow = "0 0 8px #00ff00";
-        }
+    if (theme === "cyberpunk") {
+        body.style.background = "linear-gradient(135deg, #0a0a0a, #1a001f)";
+        body.style.color = "#00f0ff";
+        terminal.style.borderColor = "#00f0ff";
+        dashboard.style.borderColor = "#00f0ff";
+        body.style.textShadow = "0 0 8px #00f0ff";
     }
 
-    document.getElementById("themeDropdown").addEventListener("change", function() {
-        applyTheme(this.value);
+    if (theme === "red") {
+        body.style.background = "linear-gradient(135deg, #1a0000, #4d0000)";
+        body.style.color = "#ff4040";
+        terminal.style.borderColor = "#ff4040";
+        dashboard.style.borderColor = "#ff4040";
+        body.style.textShadow = "0 0 8px #ff4040";
+    }
+
+    if (theme === "blue") {
+        body.style.background = "linear-gradient(135deg, #00001a, #00004d)";
+        body.style.color = "#4d94ff";
+        terminal.style.borderColor = "#4d94ff";
+        dashboard.style.borderColor = "#4d94ff";
+        body.style.textShadow = "0 0 8px #4d94ff";
+    }
+
+    if (theme === "matrix") {
+        body.style.background = "#000";
+        body.style.color = "#00ff00";
+        terminal.style.borderColor = "#00ff00";
+        dashboard.style.borderColor = "#00ff00";
+        body.style.textShadow = "0 0 8px #00ff00";
+    }
+}
+
+document.getElementById("themeDropdown").addEventListener("change", function() {
+    applyTheme(this.value);
+});
+
+// === FIREBASE CONFIG ===
+const firebaseConfig = {
+    apiKey: "AIzaSyBv9kFj1rO_bw0NbD9yNMJmjHOBO6lidVU",
+    authDomain: "brixter-portal.firebaseapp.com",
+    databaseURL: "https://brixter-portal-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    projectId: "brixter-portal",
+    storageBucket: "brixter-portal.firebasestorage.app",
+    messagingSenderId: "696818707845",
+    appId: "1:696818707845:web:78dad78f54c4e21a2e68ec"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Glitch intro → password gate
+setTimeout(() => {
+    document.getElementById("glitchIntro").style.display = "none";
+    document.getElementById("passwordGate").style.display = "block";
+}, 2000);
+
+// Fake password gate → unlock on Enter
+document.getElementById("passwordInput").addEventListener("keyup", function(e) {
+    if (e.key === "Enter") {
+        document.getElementById("passwordGate").style.display = "none";
+        document.getElementById("mainTerminal").style.display = "block";
+        document.getElementById("dashboard").style.display = "block";
+
+        applyTheme(document.getElementById("themeDropdown").value);
+        loadData();
+        initGames();
+    }
+});
+
+// Load cloud data
+function loadData() {
+    db.ref("links").once("value", snapshot => {
+        document.getElementById("linksBox").value = snapshot.val() || "";
     });
 
-    // === FIREBASE CONFIG ===
-    const firebaseConfig = {
-        apiKey: "AIzaSyBv9kFj1rO_bw0NbD9yNMJmjHOBO6lidVU",
-        authDomain: "brixter-portal.firebaseapp.com",
-        databaseURL: "https://brixter-portal-default-rtdb.asia-southeast1.firebasedatabase.app/",
-        projectId: "brixter-portal",
-        storageBucket: "brixter-portal.firebasestorage.app",
-        messagingSenderId: "696818707845",
-        appId: "1:696818707845:web:78dad78f54c4e21a2e68ec"
+    db.ref("notes").once("value", snapshot => {
+        document.getElementById("notesBox").value = snapshot.val() || "";
+    });
+}
+
+// Auto-save links
+document.getElementById("linksBox").addEventListener("input", () => {
+    db.ref("links").set(document.getElementById("linksBox").value);
+});
+
+// Auto-save notes
+document.getElementById("notesBox").addEventListener("input", () => {
+    db.ref("notes").set(document.getElementById("notesBox").value);
+});
+
+// === GAMES ENGINE ===
+function initGames() {
+    const ttt = document.getElementById("ticTacToe");
+    const snake = document.getElementById("snakeGame");
+    const mines = document.getElementById("minesGame");
+
+    document.getElementById("btnTicTacToe").onclick = () => {
+        ttt.style.display = "block";
+        snake.style.display = "none";
+        mines.style.display = "none";
     };
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    document.getElementById("btnSnake").onclick = () => {
+        ttt.style.display = "none";
+        snake.style.display = "block";
+        mines.style.display = "none";
+    };
 
-    // Glitch intro → password gate
-    setTimeout(() => {
-        document.getElementById("glitchIntro").style.display = "none";
-        document.getElementById("passwordGate").style.display = "block";
-    }, 2000);
+    document.getElementById("btnMines").onclick = () => {
+        ttt.style.display = "none";
+        snake.style.display = "none";
+        mines.style.display = "block";
+    };
 
-    // Fake password gate → unlock on Enter
-    document.getElementById("passwordInput").addEventListener("keyup", function(e) {
-        if (e.key === "Enter") {
-            document.getElementById("passwordGate").style.display = "none";
-            document.getElementById("mainTerminal").style.display = "block";
-            document.getElementById("dashboard").style.display = "block";
+    initTicTacToe();
+    initSnake();
+    initMines();
+}
 
-            applyTheme(document.getElementById("themeDropdown").value);
-            loadData();
-            initGames();
-        }
-    });
+// Tic-Tac-Toe
+function initTicTacToe() {
+    const board = document.getElementById("ticTacToeBoard");
+    const status = document.getElementById("ticTacToeStatus");
+    const reset = document.getElementById("ticTacToeReset");
+    let cells = [];
+    let current = "X";
+    let gameOver = false;
 
-    // Load cloud data
-    function loadData() {
-        db.ref("links").once("value", snapshot => {
-            document.getElementById("linksBox").value = snapshot.val() || "";
-        });
+    board.innerHTML = "";
+    cells = [];
 
-        db.ref("notes").once("value", snapshot => {
-            document.getElementById("notesBox").value = snapshot.val() || "";
-        });
+    for (let i = 0; i < 9; i++) {
+        const cell = document.createElement("div");
+        cell.className = "ttt-cell";
+        cell.dataset.index = i;
+        cell.onclick = () => {
+            if (cell.textContent || gameOver) return;
+            cell.textContent = current;
+            if (checkWin()) {
+                status.textContent = current + " wins!";
+                gameOver = true;
+            } else if ([...board.children].every(c => c.textContent)) {
+                status.textContent = "Draw!";
+                gameOver = true;
+            } else {
+                current = current === "X" ? "O" : "X";
+                status.textContent = "Turn: " + current;
+            }
+        };
+        board.appendChild(cell);
+        cells.push(cell);
     }
 
-    // Auto-save links
-    document.getElementById("linksBox").addEventListener("input", () => {
-        db.ref("links").set(document.getElementById("linksBox").value);
-    });
+    status.textContent = "Turn: " + current;
+    gameOver = false;
 
-    // Auto-save notes
-    document.getElementById("notesBox").addEventListener("input", () => {
-        db.ref("notes").set(document.getElementById("notesBox").value);
-    });
-
-    // === GAMES ENGINE ===
-    function initGames() {
-        const ttt = document.getElementById("ticTacToe");
-        const snake = document.getElementById("snakeGame");
-        const mines = document.getElementById("minesGame");
-
-        document.getElementById("btnTicTacToe").onclick = () => {
-            ttt.style.display = "block";
-            snake.style.display = "none";
-            mines.style.display = "none";
-        };
-
-        document.getElementById("btnSnake").onclick = () => {
-            ttt.style.display = "none";
-            snake.style.display = "block";
-            mines.style.display = "none";
-        };
-
-        document.getElementById("btnMines").onclick = () => {
-            ttt.style.display = "none";
-            snake.style.display = "none";
-            mines.style.display = "block";
-        };
-
-        initTicTacToe();
-        initSnake();
-        initMines();
-    }
-
-    // Tic-Tac-Toe
-    function initTicTacToe() {
-        const board = document.getElementById("ticTacToeBoard");
-        const status = document.getElementById("ticTacToeStatus");
-        const reset = document.getElementById("ticTacToeReset");
-        let cells = [];
-        let current = "X";
-        let gameOver = false;
-
-        board.innerHTML = "";
-        cells = [];
-
-        for (let i = 0; i < 9; i++) {
-            const cell = document.createElement("div");
-            cell.className = "ttt-cell";
-            cell.dataset.index = i;
-            cell.onclick = () => {
-                if (cell.textContent || gameOver) return;
-                cell.textContent = current;
-                if (checkWin()) {
-                    status.textContent = current + " wins!";
-                    gameOver = true;
-                } else if ([...board.children].every(c => c.textContent)) {
-                    status.textContent = "Draw!";
-                    gameOver = true;
-                } else {
-                    current = current === "X" ? "O" : "X";
-                    status.textContent = "Turn: " + current;
-                }
-            };
-            board.appendChild(cell);
-            cells.push(cell);
-        }
-
+    reset.onclick = () => {
+        cells.forEach(c => c.textContent = "");
+        current = "X";
         status.textContent = "Turn: " + current;
         gameOver = false;
+    };
 
-        reset.onclick = () => {
-            cells.forEach(c => c.textContent = "");
-            current = "X";
-            status.textContent = "Turn: " + current;
-            gameOver = false;
-        };
-
-        function checkWin() {
-            const lines = [
-                [0,1,2],[3,4,5],[6,7,8],
-                [0,3,6],[1,4,7],[2,5,8],
-                [0,4,8],[2,4,6]
-            ];
-            return lines.some(line => {
-                const [a,b,c] = line;
-                return cells[a].textContent &&
-                       cells[a].textContent === cells[b].textContent &&
-                       cells[a].textContent === cells[c].textContent;
-            });
-        }
-    }
-
-    // Snake (simple)
-    function initSnake() {
-        const canvas = document.getElementById("snakeCanvas");
-        const ctx = canvas.getContext("2d");
-        let snake = [{x: 100, y: 100}];
-        let dir = {x: 10, y: 0};
-        let food = {x: 50, y: 50};
-
-        document.addEventListener("keydown", e => {
-            if (e.key === "ArrowUp") dir = {x: 0, y: -10};
-            if (e.key === "ArrowDown") dir = {x: 0, y: 10};
-            if (e.key === "ArrowLeft") dir = {x: -10, y: 0};
-            if (e.key === "ArrowRight") dir = {x: 10, y: 0};
+    function checkWin() {
+        const lines = [
+            [0,1,2],[3,4,5],[6,7,8],
+            [0,3,6],[1,4,7],[2,5,8],
+            [0,4,8],[2,4,6]
+        ];
+        return lines.some(line => {
+            const [a,b,c] = line;
+            return cells[a].textContent &&
+                   cells[a].textContent === cells[b].textContent &&
+                   cells[a].textContent === cells[c].textContent;
         });
+    }
+}
 
-        function loop() {
-            const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
-            snake.unshift(head);
+// Snake (simple)
+function initSnake() {
+    const canvas = document.getElementById("snakeCanvas");
+    const ctx = canvas.getContext("2d");
+    let snake = [{x: 100, y: 100}];
+    let dir = {x: 10, y: 0};
+    let food = {x: 50, y: 50};
 
-            if (head.x === food.x && head.y === food.y) {
-                food = {
-                    x: Math.floor(Math.random()*20)*10,
-                    y: Math.floor(Math.random()*20)*10
-                };
-            } else {
-                snake.pop();
-            }
+    document.addEventListener("keydown", e => {
+        if (e.key === "ArrowUp") dir = {x: 0, y: -10};
+        if (e.key === "ArrowDown") dir = {x: 0, y: 10};
+        if (e.key === "ArrowLeft") dir = {x: -10, y: 0};
+        if (e.key === "ArrowRight") dir = {x: 10, y: 0};
+    });
 
-            if (head.x < 0 || head.y < 0 || head.x >= 200 || head.y >= 200 ||
-                snake.slice(1).some(s => s.x === head.x && s.y === head.y)) {
-                snake = [{x: 100, y: 100}];
-                dir = {x: 10, y: 0};
-            }
+    function loop() {
+        const head = {x: snake[0].x + dir.x, y: snake[0].y + dir.y};
+        snake.unshift(head);
 
-            ctx.fillStyle = "#000";
-            ctx.fillRect(0,0,200,200);
-
-            ctx.fillStyle = "#00ff9d";
-            snake.forEach(s => ctx.fillRect(s.x, s.y, 10, 10));
-
-            ctx.fillStyle = "#ff00c8";
-            ctx.fillRect(food.x, food.y, 10, 10);
-
-            requestAnimationFrame(loop);
+        if (head.x === food.x && head.y === food.y) {
+            food = {
+                x: Math.floor(Math.random()*20)*10,
+                y: Math.floor(Math.random()*20)*10
+            };
+        } else {
+            snake.pop();
         }
 
-        loop();
+        if (head.x < 0 || head.y < 0 || head.x >= 200 || head.y >= 200 ||
+            snake.slice(1).some(s => s.x === head.x && s.y === head.y)) {
+            snake = [{x: 100, y: 100}];
+            dir = {x: 10, y: 0};
+        }
+
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0,0,200,200);
+
+        ctx.fillStyle = "#00ff9d";
+        snake.forEach(s => ctx.fillRect(s.x, s.y, 10, 10));
+
+        ctx.fillStyle = "#ff00c8";
+        ctx.fillRect(food.x, food.y, 10, 10);
+
+        requestAnimationFrame(loop);
     }
 
-    // Minesweeper (simple grid)
-    function initMines() {
-        const canvas = document.getElementById("minesCanvas");
-        const ctx = canvas.getContext("2d");
-        const size = 10;
-        const cellSize = 20;
-        let mines = [];
-        let revealed = [];
+    loop();
+}
 
-        function reset() {
-            mines = [];
-            revealed = [];
-            for (let i = 0; i < size*size; i++) {
-                revealed[i] = false;
-            }
-            while (mines.length < 20) {
-                const idx = Math.floor(Math.random()*size*size);
-                if (!mines.includes(idx)) mines.push(idx);
-            }
-            draw();
+// Minesweeper (simple grid)
+function initMines() {
+    const canvas = document.getElementById("minesCanvas");
+    const ctx = canvas.getContext("2d");
+    const size = 10;
+    const cellSize = 20;
+    let mines = [];
+    let revealed = [];
+
+    function reset() {
+        mines = [];
+        revealed = [];
+        for (let i = 0; i < size*size; i++) {
+            revealed[i] = false;
         }
+        while (mines.length < 20) {
+            const idx = Math.floor(Math.random()*size*size);
+            if (!mines.includes(idx)) mines.push(idx);
+        }
+        draw();
+    }
 
-        function draw() {
-            ctx.fillStyle = "#000";
-            ctx.fillRect(0,0,200,200);
+    function draw() {
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0,0,200,200);
 
-            for (let y = 0; y < size; y++) {
-                for (let x = 0; x < size; x++) {
-                    const idx = y*size + x;
-                    ctx.strokeStyle = "#00ff9d";
-                    ctx.strokeRect(x*cellSize, y*cellSize, cellSize, cellSize);
+        for (let y = 0; y < size; y++) {
+            for (let x = 0; x < size; x++) {
+                const idx = y*size + x;
+                ctx.strokeStyle = "#00ff9d";
+                ctx.strokeRect(x*cellSize, y*cellSize, cellSize, cellSize);
 
-                    if (revealed[idx]) {
-                        if (mines.includes(idx)) {
-                            ctx.fillStyle = "#ff0000";
-                            ctx.fillRect(x*cellSize+4, y*cellSize+4, cellSize-8, cellSize-8);
-                        } else {
-                            ctx.fillStyle = "#00ff9d";
-                            const count = countMinesAround(x,y);
-                            ctx.fillText(count.toString(), x*cellSize+8, y*cellSize+14);
-                        }
+                if (revealed[idx]) {
+                    if (mines.includes(idx)) {
+                        ctx.fillStyle = "#ff0000";
+                        ctx.fillRect(x*cellSize+4, y*cellSize+4, cellSize-8, cellSize-8);
+                    } else {
+                        ctx.fillStyle = "#00ff9d";
+                        const count = countMinesAround(x,y);
+                        ctx.fillText(count.toString(), x*cellSize+8, y*cellSize+14);
                     }
                 }
             }
         }
+    }
 
-        function countMinesAround(x,y) {
-            let count = 0;
-            for (let dy=-1; dy<=1; dy++) {
-                for (let dx=-1; dx<=1; dx++) {
-                    if (dx===0 && dy===0) continue;
-                    const nx = x+dx, ny = y+dy;
-                    if (nx>=0 && ny>=0 && nx<size && ny<size) {
-                        const idx = ny*size + nx;
-                        if (mines.includes(idx)) count++;
-                    }
+    function countMinesAround(x,y) {
+        let count = 0;
+        for (let dy=-1; dy<=1; dy++) {
+            for (let dx=-1; dx<=1; dx++) {
+                if (dx===0 && dy===0) continue;
+                const nx = x+dx, ny = y+dy;
+                if (nx>=0 && ny>=0 && nx<size && ny<size) {
+                    const idx = ny*size + nx;
+                    if (mines.includes(idx)) count++;
                 }
             }
-            return count;
         }
-
-        canvas.addEventListener("click", e => {
-            const rect = canvas.getBoundingClientRect();
-            const x = Math.floor((e.clientX - rect.left)/cellSize);
-            const y = Math.floor((e.clientY - rect.top)/cellSize);
-            const idx = y*size + x;
-            revealed[idx] = true;
-            draw();
-        });
-
-        reset();
+        return count;
     }
+
+    canvas.addEventListener("click", e => {
+        const rect = canvas.getBoundingClientRect();
+        const x = Math.floor((e.clientX - rect.left)/cellSize);
+        const y = Math.floor((e.clientY - rect.top)/cellSize);
+        const idx = y*size + x;
+        revealed[idx] = true;
+        draw();
+    });
+
+    reset();
+}
 </script>
 
 </body>
